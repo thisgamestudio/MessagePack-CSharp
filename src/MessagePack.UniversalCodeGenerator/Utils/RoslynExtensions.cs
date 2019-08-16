@@ -92,9 +92,10 @@ namespace MessagePack.CodeGenerator
         }
         static async Task<AnalyzerResult[]> GetAnalyzerResults(AnalyzerManager analyzerManager, string csprojPath, params string[] preprocessorSymbols)
         {
-            var tempPath = Path.Combine(new FileInfo(csprojPath).Directory.FullName, "__buildtemp");
+            var tempPath = "/tmp/__buildtemp/";
             try
             {
+                Directory.CreateDirectory(tempPath);
                 if (!await TryExecute(csprojPath, tempPath, true).ConfigureAwait(false))
                 {
                     Console.WriteLine("execute `dotnet msbuild` failed, retry with `msbuild`");
