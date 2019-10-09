@@ -20,6 +20,8 @@ namespace MessagePack.CodeGenerator
 
         public bool IsParsed { get; set; }
 
+        public bool IsWindowsLineEndings { get; private set; }
+
         public CommandlineArguments(string[] args)
         {
             ConditionalSymbols = new List<string>();
@@ -35,6 +37,7 @@ namespace MessagePack.CodeGenerator
                 { "r|resolvername=", "[optional, default=GeneratedResolver]Set resolver name", x => { ResolverName = x; } },
                 { "n|namespace=", "[optional, default=MessagePack]Set namespace root name", x => { NamespaceRoot = x; } },
                 { "m|usemapmode", "[optional, default=false]Force use map mode serialization", x => { IsUseMap = true; } },
+                { "w|windowscrlf", "[optional, default=false]Use linux line endings", x => { IsWindowsLineEndings = true; } },
             };
             if (args.Length == 0)
             {
@@ -154,6 +157,11 @@ namespace MessagePack.CodeGenerator
                 {
                     var text = item.TransformText();
                     sb.AppendLine(text);
+                }
+
+                if (!cmdArgs.IsWindowsLineEndings)
+                {
+                    sb.Replace("\r\n", "\n");
                 }
 
                 Output(cmdArgs.OutputPath, sb.ToString());
